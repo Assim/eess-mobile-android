@@ -1,57 +1,84 @@
 package com.masaaroman.eessmobile;
 
-import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.ActionBar.TabListener;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.os.Bundle;
 
-public class MainActivity extends Activity implements TabListener {
-
+public class MainActivity extends Activity {
+    /** Called when the activity is first created. */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
-        actionBar.addTab(actionBar.newTab().setText("Departments")
-                .setTabListener(this));
-        actionBar.addTab(actionBar.newTab().setText("Search")
-                .setTabListener(this));
-        actionBar.addTab(actionBar.newTab().setText("Cart")
-                .setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText("Departments").setTabListener(new TabListener<DepartmentsFragment>(this, "Departments", DepartmentsFragment.class)));
+        actionBar.addTab(actionBar.newTab().setText("Search").setTabListener(new TabListener<SearchFragment>(this, "Search", SearchFragment.class)));
+        actionBar.addTab(actionBar.newTab().setText("Cart").setTabListener(new TabListener<CartFragment>(this, "Cart", CartFragment.class)));
+        
+        if (savedInstanceState != null) {
+            int savedIndex = savedInstanceState.getInt("SAVED_INDEX");
+            getActionBar().setSelectedNavigationItem(savedIndex);
+        }
+        
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		outState.putInt("SAVED_INDEX", getActionBar().getSelectedNavigationIndex());
+	}
 
+	public static class TabListener<T extends Fragment> 
+    	implements ActionBar.TabListener{
+    	
+        private final Activity myActivity;
+        private final String myTag;
+        private final Class<T> myClass;
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab,
-        FragmentTransaction fragmentTransaction) {
-      
-    }
+        public TabListener(Activity activity, String tag, Class<T> cls) {
+            myActivity = activity;
+            myTag = tag;
+            myClass = cls;
+        }
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab,
-        FragmentTransaction fragmentTransaction) {
-    }
+		@Override
+		public void onTabSelected(Tab tab, FragmentTransaction ft) {
 
-    @Override
-    public void onTabReselected(ActionBar.Tab tab,
-        FragmentTransaction fragmentTransaction) {
+			Fragment myFragment = myActivity.getFragmentManager().findFragmentByTag(myTag);
+			
+			// Check if the fragment is already initialized
+	        if (myFragment == null) {
+	            // If not, instantiate and add it to the activity
+	            myFragment = Fragment.instantiate(myActivity, myClass.getName());
+	            ft.add(android.R.id.content, myFragment, myTag);
+	        } else {
+	            // If it exists, simply attach it in order to show it
+	            ft.attach(myFragment);
+	        }
+			
+		}
+
+		@Override
+		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+			
+			Fragment myFragment = myActivity.getFragmentManager().findFragmentByTag(myTag);
+			
+			if (myFragment != null) {
+	            // Detach the fragment, because another one is being attached
+	            ft.detach(myFragment);
+	        }
+			
+		}
+
+		@Override
+		public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			
+		}
     }
-    
 }
