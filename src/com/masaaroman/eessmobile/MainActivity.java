@@ -49,7 +49,6 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onTabSelected(Tab tab, FragmentTransaction ft) {
-
 			Fragment myFragment = myActivity.getFragmentManager().findFragmentByTag(myTag);
 			
 			// Check if the fragment is already initialized
@@ -60,20 +59,17 @@ public class MainActivity extends Activity {
 	        } else {
 	            // If it exists, simply attach it in order to show it
 	            ft.attach(myFragment);
-	        }
-			
+	        }	
 		}
 
 		@Override
 		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-			
 			Fragment myFragment = myActivity.getFragmentManager().findFragmentByTag(myTag);
 			
 			if (myFragment != null) {
 	            // Detach the fragment, because another one is being attached
 	            ft.detach(myFragment);
 	        }
-			
 		}
 
 		@Override
