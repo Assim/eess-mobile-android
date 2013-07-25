@@ -1,4 +1,4 @@
-package com.masaaroman.eessmobile;
+package com.masaaroman.eessmobile.model;
 
 import com.google.gson.annotations.SerializedName;
 

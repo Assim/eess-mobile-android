@@ -1,4 +1,4 @@
-package com.masaaroman.eessmobile;
+package com.masaaroman.eessmobile.model;
 
 import java.math.BigDecimal;
 
