@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.masaaroman.eessmobile.model.DepartmentJson;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class DepartmentsFragment extends ListFragment {
+public class DepartmentsFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View myFragmentView = inflater.inflate(R.layout.fragment_departments, container, false);
+		final View myFragmentView = inflater.inflate(R.layout.fragment_departments, container, false);
 		
 		// To prevent android.os.NetworkOnMainThreadException
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -32,7 +33,6 @@ public class DepartmentsFragment extends ListFragment {
 		try {
 			json = Utilities.readUrl("http://masaaroman.com/interface/index.php/departments/");
 		} catch (Exception e) {
-			Toast.makeText(myFragmentView.getContext(), e.toString(), Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
 		
@@ -48,13 +48,18 @@ public class DepartmentsFragment extends ListFragment {
 		}
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(myFragmentView.getContext(), android.R.layout.simple_list_item_1, list);
-		setListAdapter(adapter);
+		ListView lv = (ListView)myFragmentView.findViewById(R.id.deptList);
+		lv.setAdapter(adapter);
+		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				final String item = (String) parent.getItemAtPosition(position);
+				
+				Toast.makeText(myFragmentView.getContext(), item, Toast.LENGTH_LONG).show();
+			}
+		});
 
 		return myFragmentView;
-	}
-	
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-	    
 	}
 }
