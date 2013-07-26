@@ -10,7 +10,6 @@ public class StartActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_start);
 		
-		
 		setProgressBarIndeterminateVisibility(true);
 	}
 }

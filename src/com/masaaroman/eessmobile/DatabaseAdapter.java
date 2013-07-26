@@ -1,6 +1,11 @@
 package com.masaaroman.eessmobile;
 
+import java.util.ArrayList;
+
+import com.masaaroman.eessmobile.model.Department;
+
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -52,5 +57,41 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
  
         // Create tables again
         onCreate(db);
+	}
+	
+	public void clearDatabase() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("TRUNCATE TABLE "+ TABLE_DATA);
+		db.execSQL("TRUNCATE TABLE "+ TABLE_DEPARTMENTS);
+		db.execSQL("TRUNCATE TABLE "+ TABLE_ITEMS);
+	}
+	
+	public Department getDepartment(int departmentId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_DEPARTMENTS, new String[] { KEY_DEPARTMENTS_DEPARTMENT_ID, KEY_DEPARTMENTS_NAME }, KEY_DEPARTMENTS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		if(cursor != null) {
+			cursor.moveToFirst();
+		}
+		
+		Department department = new Department(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+		
+		return department;
+	}
+	
+	public ArrayList<Department> getAllDepartments() {
+		ArrayList<Department> departmentList = new ArrayList<Department>();
+		String selectQuery = "SELECT  * FROM " + TABLE_DEPARTMENTS;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.rawQuery(selectQuery, null);		
+		if(cursor.moveToFirst()) {
+			do {
+				departmentList.add(new Department(Integer.parseInt(cursor.getString(0)), cursor.getString(1)));
+			} while(cursor.moveToNext());
+		}
+		
+		return departmentList;
 	}
 }
