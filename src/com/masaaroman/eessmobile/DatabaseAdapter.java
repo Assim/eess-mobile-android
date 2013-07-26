@@ -1,9 +1,12 @@
 package com.masaaroman.eessmobile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.masaaroman.eessmobile.model.Department;
 import com.masaaroman.eessmobile.model.DepartmentJson;
+import com.masaaroman.eessmobile.model.Item;
+import com.masaaroman.eessmobile.model.ItemJson;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -105,6 +108,50 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 			values.put(KEY_DEPARTMENTS_DEPARTMENT_ID, data.get(i).getDepartmentId());
 			values.put(KEY_DEPARTMENTS_NAME, data.get(i).getName());
 			db.insert(TABLE_DEPARTMENTS, null, values);
+		}
+		
+		db.close();
+	}
+	
+	public Item getItem(int itemId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_ITEM_ID + "=?", new String[] { String.valueOf(itemId) }, null, null, null);
+		if(cursor != null) {
+			cursor.moveToFirst();
+		}
+		
+		Item item = new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4)));
+		
+		return item;
+	}
+	
+	public ArrayList<Item> getAllItems() {
+		ArrayList<Item> itemList = new ArrayList<Item>();
+		String selectQuery = "SELECT  * FROM " + TABLE_ITEMS;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		if(cursor.moveToFirst()) {
+			do {
+				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4))));
+			} while(cursor.moveToNext());
+		}
+		
+		return itemList;
+	}
+	
+	public void addItems(ItemJson data) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		for(int i=0; i<data.size(); i++) {
+			ContentValues values = new ContentValues();
+			values.put(KEY_ITEMS_ITEM_ID, data.get(i).getItemId());
+			values.put(KEY_ITEMS_DEPARTMENT_ID, data.get(i).getDepartmentId());
+			values.put(KEY_ITEMS_BARCODE, data.get(i).getBarcode());
+			values.put(KEY_ITEMS_NAME, data.get(i).getName());
+			values.put(KEY_ITEMS_PRICE, data.get(i).getPrice().toString());
 		}
 		
 		db.close();

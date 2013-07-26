@@ -2,11 +2,13 @@ package com.masaaroman.eessmobile;
 
 import com.google.gson.Gson;
 import com.masaaroman.eessmobile.model.DepartmentJson;
+import com.masaaroman.eessmobile.model.ItemJson;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +16,9 @@ public class StartActivity extends Activity {
 	
 	private DatabaseAdapter db;
 	private String api;
+	private int itemsToComplete;
+	private TextView statusText;
+	private ProgressBar progressBar;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,15 +26,19 @@ public class StartActivity extends Activity {
 		setContentView(R.layout.activity_start);
 		setProgressBarIndeterminateVisibility(true);
 		
-		TextView statusText = (TextView)findViewById(R.id.statusText);
+		statusText = (TextView)findViewById(R.id.statusText);
+		progressBar = (ProgressBar)findViewById(R.id.progressBar);
+		
 		statusText.setText("Checking for updates...");
 		
 		api = "http://masaaroman.com/api/index.php/";
 		db = new DatabaseAdapter(this);
 		
-		TaskObject task = new TaskObject(api+"departments", "departments");
+		TaskObject dataTask = new TaskObject(api, "data");
+		TaskObject departmentTask = new TaskObject(api+"departments", "departments");
+		TaskObject itemTask = new TaskObject(api+"items", "items");
 		
-		new FetchDataTask().execute(task);
+		new FetchDataTask().execute(dataTask, departmentTask, itemTask);
 	}
 	
 	private class TaskObject {
@@ -41,16 +50,8 @@ public class StartActivity extends Activity {
 			this.table = table;
 		}
 		
-		public void setUrl(String url) {
-			this.url = url;
-		}
-		
 		public String getUrl() {
 			return this.url;
-		}
-		
-		public void setTable(String table) {
-			this.table = table;
 		}
 		
 		public String getTable() {
@@ -88,10 +89,37 @@ public class StartActivity extends Activity {
 					 db.addDepartments(deptData);
 				 }
 				 else if(tasks[i].getTable().equals("items")) {
+					 do {
+						 if(!firstTry) {
+							 publishProgress(-1);
+						 }
+						 
+						 try {
+							 json = Utilities.readUrl(tasks[i].getUrl());
+						 } catch (Exception e) {
+							 e.printStackTrace();
+						 }
+					 } while(json.equals(""));
 					 
+					 publishProgress(0);
+					 
+					 ItemJson itemData = gson.fromJson(json, ItemJson.class);
+					 db.addItems(itemData);
 				 }
 				 else if(tasks[i].getTable().equals("data")) {
+					 do {
+						 if(!firstTry) {
+							 publishProgress(-1);
+						 }
+						 
+						 try {
+							 json = Utilities.readUrl(tasks[i].getUrl());
+						 } catch (Exception e) {
+							 e.printStackTrace();
+						 }
+					 } while(json.equals(""));
 					 
+					 publishProgress(0);
 				 }
 				 
 				 // So the next task is considered in it's first try
@@ -107,7 +135,7 @@ public class StartActivity extends Activity {
 	    	 }
 	    	 else {
 
-		         Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+		         Toast.makeText(getApplicationContext(), db.getDepartment(1).getName(), Toast.LENGTH_SHORT).show();
 	    	 }
 	     }
 		
