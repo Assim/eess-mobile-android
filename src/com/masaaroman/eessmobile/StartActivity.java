@@ -163,6 +163,7 @@ public class StartActivity extends Activity {
 		@Override
 		protected void onPostExecute(Long result) {
 	         Toast.makeText(getApplicationContext(), "Application loaded.", Toast.LENGTH_LONG).show();
+	         setProgressBarIndeterminateVisibility(false);
 		}
 	}
 }
