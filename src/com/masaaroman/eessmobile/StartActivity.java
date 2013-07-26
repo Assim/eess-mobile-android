@@ -116,7 +116,8 @@ public class StartActivity extends Activity {
 					 // Check if API last update is bigger than last update in app
 					 // Then it requires an update, otherwise cancel
 					 if(lastUpdate > db.getLastUpdate()) {
-						 // Add "data" table to database and continue adding the rest
+						 // Clear database and add "data" table to database and continue adding the rest
+						 db.clearDatabase();
 						 db.addData(data);
 					 }
 					 else {
