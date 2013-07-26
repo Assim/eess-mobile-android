@@ -174,4 +174,17 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		
 		db.close();
 	}
+	
+	public long getLastUpdate() {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_DATA, new String[] { KEY_DATA_VALUE }, KEY_DATA_NAME + "=?", new String[] { "last_update" }, null, null, null);
+		if(cursor != null) {
+			if(cursor.moveToFirst()) {
+				long result = Long.parseLong(cursor.getString(0));
+				return result;
+			}
+		}
+		return 0;
+	}
 }
