@@ -184,21 +184,22 @@ public class StartActivity extends Activity {
 		    	 
 			// This means there is a connection error
 			if(progress[0] == -1) {
-				statusText.setText("Connection error. Trying to reconnect...");
+				statusText.setText("Connection error. Reconnecting...");
 			}
 		    	 
 			if(progress[0] == 2) {
-					statusText.setText("Downloading data...");
+					statusText.setText("Downloading updates...");
 			}
 		}
 		
 		protected void onCancelled() {
-			onPostExecute(0L);
+			statusText.setText("No new updates. Starting...");
+			startMainActivity();
 		}
 			
 		@Override
 		protected void onPostExecute(Long result) {
-			statusText.setText("All data downloaded. Starting...");
+			statusText.setText("All updates downloaded. Starting...");
 			setProgressBarIndeterminateVisibility(false);
 			startMainActivity();
 		}
