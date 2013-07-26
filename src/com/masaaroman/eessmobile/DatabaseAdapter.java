@@ -3,7 +3,9 @@ package com.masaaroman.eessmobile;
 import java.util.ArrayList;
 
 import com.masaaroman.eessmobile.model.Department;
+import com.masaaroman.eessmobile.model.DepartmentJson;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -93,5 +95,18 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		}
 		
 		return departmentList;
+	}
+	
+	public void addDepartments(DepartmentJson data) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		for(int i=0; i<data.size(); i++) {
+			ContentValues values = new ContentValues();
+			values.put(KEY_DEPARTMENTS_DEPARTMENT_ID, data.get(i).getDepartmentId());
+			values.put(KEY_DEPARTMENTS_NAME, data.get(i).getName());
+			db.insert(TABLE_DEPARTMENTS, null, values);
+		}
+		
+		db.close();
 	}
 }
