@@ -3,10 +3,12 @@ package com.masaaroman.eessmobile;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import com.masaaroman.eessmobile.model.DataJson;
 import com.masaaroman.eessmobile.model.Department;
 import com.masaaroman.eessmobile.model.DepartmentJson;
 import com.masaaroman.eessmobile.model.Item;
 import com.masaaroman.eessmobile.model.ItemJson;
+import com.masaaroman.eessmobile.model.ProgressBarUpdater;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -100,7 +102,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		return departmentList;
 	}
 	
-	public void addDepartments(DepartmentJson data) {
+	public void addDepartments(DepartmentJson data, ProgressBarUpdater progressBarUpdater) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		for(int i=0; i<data.size(); i++) {
@@ -108,6 +110,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 			values.put(KEY_DEPARTMENTS_DEPARTMENT_ID, data.get(i).getDepartmentId());
 			values.put(KEY_DEPARTMENTS_NAME, data.get(i).getName());
 			db.insert(TABLE_DEPARTMENTS, null, values);
+			progressBarUpdater.increment();
 		}
 		
 		db.close();
@@ -142,7 +145,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		return itemList;
 	}
 	
-	public void addItems(ItemJson data) {
+	public void addItems(ItemJson data, ProgressBarUpdater progressBarUpdater) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		for(int i=0; i<data.size(); i++) {
@@ -152,6 +155,21 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 			values.put(KEY_ITEMS_BARCODE, data.get(i).getBarcode());
 			values.put(KEY_ITEMS_NAME, data.get(i).getName());
 			values.put(KEY_ITEMS_PRICE, data.get(i).getPrice().toString());
+			db.insert(TABLE_ITEMS, null, values);
+			progressBarUpdater.increment();
+		}
+		
+		db.close();
+	}
+	
+	public void addData(DataJson data) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		for(int i=0; i<data.size(); i++) {
+			ContentValues values = new ContentValues();
+			values.put(KEY_DATA_NAME, data.get(i).getName());
+			values.put(KEY_DATA_VALUE, data.get(i).getValue());
+			db.insert(TABLE_DATA, null, values);
 		}
 		
 		db.close();

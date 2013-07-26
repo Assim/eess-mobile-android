@@ -1,8 +1,10 @@
 package com.masaaroman.eessmobile;
 
 import com.google.gson.Gson;
+import com.masaaroman.eessmobile.model.DataJson;
 import com.masaaroman.eessmobile.model.DepartmentJson;
 import com.masaaroman.eessmobile.model.ItemJson;
+import com.masaaroman.eessmobile.model.ProgressBarUpdater;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -19,6 +21,7 @@ public class StartActivity extends Activity {
 	private int itemsToComplete;
 	private TextView statusText;
 	private ProgressBar progressBar;
+	private ProgressBarUpdater progressBarUpdater;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,7 +72,38 @@ public class StartActivity extends Activity {
 			 
 			 // Loop for the tasks
 			 for (int i = 0; i < tasks.length; i++) {
-				 if(tasks[i].getTable().equals("departments")) {
+				 if(tasks[i].getTable().equals("data")) {
+					 do {
+						 if(!firstTry) {
+							 publishProgress(-1);
+						 }
+						 
+						 try {
+							 json = Utilities.readUrl(tasks[i].getUrl());
+						 } catch (Exception e) {
+							 e.printStackTrace();
+						 }
+					 } while(json.equals(""));
+					 
+					 publishProgress(0);
+					 
+					 // TODO check for updates
+					 // TODO add last update to internal database
+					 DataJson data = gson.fromJson(json, DataJson.class);
+					 for(int j=0; j<data.size(); j++) {
+						 String name = data.get(j).getName();
+						 String value = data.get(j).getValue();
+						 
+						 if(name.equals("departments_count") || name.equals("items_counts")) {
+							 itemsToComplete += Integer.parseInt(value);
+						 }
+					 }
+					 
+					 // So that it'll make a new object of ProgressBarUpdater
+					 publishProgress(1);
+					 
+				 }
+				 else if(tasks[i].getTable().equals("departments")) {
 					 // Get JSON from API
 					 do {
 						 if(!firstTry) {
@@ -86,7 +120,7 @@ public class StartActivity extends Activity {
 					 publishProgress(0);
 					 
 					 DepartmentJson deptData = gson.fromJson(json, DepartmentJson.class);
-					 db.addDepartments(deptData);
+					 db.addDepartments(deptData, progressBarUpdater);
 				 }
 				 else if(tasks[i].getTable().equals("items")) {
 					 do {
@@ -104,22 +138,7 @@ public class StartActivity extends Activity {
 					 publishProgress(0);
 					 
 					 ItemJson itemData = gson.fromJson(json, ItemJson.class);
-					 db.addItems(itemData);
-				 }
-				 else if(tasks[i].getTable().equals("data")) {
-					 do {
-						 if(!firstTry) {
-							 publishProgress(-1);
-						 }
-						 
-						 try {
-							 json = Utilities.readUrl(tasks[i].getUrl());
-						 } catch (Exception e) {
-							 e.printStackTrace();
-						 }
-					 } while(json.equals(""));
-					 
-					 publishProgress(0);
+					 db.addItems(itemData, progressBarUpdater);
 				 }
 				 
 				 // So the next task is considered in it's first try
@@ -129,19 +148,21 @@ public class StartActivity extends Activity {
 		}
 		
 	     protected void onProgressUpdate(Integer... progress) {
-	    	 if(progress[0] == -1) {
-		         Toast.makeText(getApplicationContext(), "Retrying...", Toast.LENGTH_SHORT).show();
-	    		 
+	    	 // This means data is loaded, and make a ProgressBarUpdater
+	    	 if(progress[0] == 1) {
+		         // Make a new object of progress bar updater
+	    		 progressBarUpdater = new ProgressBarUpdater(progressBar, itemsToComplete);
 	    	 }
-	    	 else {
-
-		         Toast.makeText(getApplicationContext(), db.getDepartment(1).getName(), Toast.LENGTH_SHORT).show();
+	    	 
+	    	 // Show a reconnecting message just in case data was not fetched
+	    	 if(progress[0] == -1) {
+	    		 Toast.makeText(getApplicationContext(), "Connection error. Reconnecting...", Toast.LENGTH_SHORT).show();
 	    	 }
 	     }
 		
 		@Override
 		protected void onPostExecute(Long result) {
-	         Toast.makeText(getApplicationContext(), "works", Toast.LENGTH_LONG).show();
+	         Toast.makeText(getApplicationContext(), "Application loaded.", Toast.LENGTH_LONG).show();
 		}
 	}
 }
