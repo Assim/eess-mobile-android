@@ -102,6 +102,14 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		return departmentList;
 	}
 	
+	public Cursor getAllDepartmentsCursor() {
+		String selectQuery = "SELECT  * FROM " + TABLE_DEPARTMENTS;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery(selectQuery, null);		
+	}
+	
 	public void addDepartments(DepartmentJson data, ProgressBarUpdater progressBarUpdater) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
@@ -143,6 +151,34 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		}
 		
 		return itemList;
+	}
+	
+	public Cursor getAllItemsCursor() {
+		String selectQuery = "SELECT  * FROM " + TABLE_ITEMS;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.rawQuery(selectQuery, null);
+	}
+	
+	public ArrayList<Item> getDepartmentItems(int departmentId) {
+		ArrayList<Item> itemList = new ArrayList<Item>();
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		if(cursor.moveToFirst()) {
+			do {
+				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4))));
+			} while(cursor.moveToNext());
+		}
+		return itemList;
+	}
+	
+	public Cursor getDepartmentItemsCursor(int departmentId) {		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		return db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
 	}
 	
 	public void addItems(ItemJson data, ProgressBarUpdater progressBarUpdater) {
