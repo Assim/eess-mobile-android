@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class DepartmentsFragment extends Fragment {
 
@@ -36,8 +35,7 @@ public class DepartmentsFragment extends Fragment {
 			R.id.departmentName	
 		};
 		
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(myFragmentView.getContext(), R.layout.fragment_departments_row, cursor, from, to);
+		ItemAdapter adapter = new ItemAdapter(myFragmentView.getContext(), R.layout.fragment_departments_row, cursor, from, to, 0);
 		
 		ListView lv = (ListView)myFragmentView.findViewById(R.id.deptList);
 		lv.setAdapter(adapter);

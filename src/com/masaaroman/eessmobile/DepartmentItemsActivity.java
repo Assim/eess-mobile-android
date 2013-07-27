@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +35,7 @@ public class DepartmentItemsActivity extends Activity {
 			R.id.itemName
 		};
 		
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.row_item, cursor, from, to);
+		ItemAdapter adapter = new ItemAdapter(this, R.layout.row_item, cursor, from, to, 0);
 		
 		ListView lv = (ListView)findViewById(R.id.itemsList);
 		lv.setAdapter(adapter);
@@ -46,7 +44,7 @@ public class DepartmentItemsActivity extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-				Toast.makeText(getApplicationContext(), String.valueOf(id), Toast.LENGTH_LONG).show();
+				// Click event
 			}
 		});
 		
