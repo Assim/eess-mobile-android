@@ -94,7 +94,7 @@ public class Cart {
 		setAmount(new BigDecimal(0));
 	}
 	
-	public void setAmount(BigDecimal amount) {
+	private void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 	

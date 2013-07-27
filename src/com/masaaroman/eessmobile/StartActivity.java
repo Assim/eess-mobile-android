@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StartActivity extends Activity {
 	

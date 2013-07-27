@@ -26,7 +26,8 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout2=0x7f080000;
-        public static final int action_settings=0x7f080005;
+        public static final int action_settings=0x7f080006;
+        public static final int departmentName=0x7f080005;
         public static final int deptList=0x7f080004;
         public static final int imageView1=0x7f080003;
         public static final int progressBar=0x7f080002;
@@ -36,7 +37,8 @@ public final class R {
         public static final int activity_start=0x7f030000;
         public static final int fragment_cart=0x7f030001;
         public static final int fragment_departments=0x7f030002;
-        public static final int fragment_search=0x7f030003;
+        public static final int fragment_departments_row=0x7f030003;
+        public static final int fragment_search=0x7f030004;
     }
     public static final class menu {
         public static final int main=0x7f070000;

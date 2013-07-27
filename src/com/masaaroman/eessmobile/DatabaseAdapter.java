@@ -18,26 +18,27 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseAdapter extends SQLiteOpenHelper {
 	
-	private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "eess";
+	public static final int DATABASE_VERSION = 1;
+	public static final String DATABASE_NAME = "eess";
     
-    private static final String TABLE_DATA = "data";
+	public static final String TABLE_DATA = "data";
     
-    private static final String KEY_DATA_NAME = "name";
-    private static final String KEY_DATA_VALUE = "value";
+	public static final String KEY_DATA_DATA_ID = "_id";
+	public static final String KEY_DATA_NAME = "name";
+	public static final String KEY_DATA_VALUE = "value";
     
-    private static final String TABLE_DEPARTMENTS = "departments";
+	public static final String TABLE_DEPARTMENTS = "departments";
     
-    private static final String KEY_DEPARTMENTS_DEPARTMENT_ID = "department_id";
-    private static final String KEY_DEPARTMENTS_NAME = "name";
+	public static final String KEY_DEPARTMENTS_DEPARTMENT_ID = "_id";
+	public static final String KEY_DEPARTMENTS_NAME = "name";
 
-    private static final String TABLE_ITEMS = "items";
+	public static final String TABLE_ITEMS = "items";
     
-    private static final String KEY_ITEMS_ITEM_ID = "item_id";
-    private static final String KEY_ITEMS_DEPARTMENT_ID = "department_id";
-    private static final String KEY_ITEMS_BARCODE = "barcode";
-    private static final String KEY_ITEMS_NAME = "name";
-    private static final String KEY_ITEMS_PRICE = "price";
+	public static final String KEY_ITEMS_ITEM_ID = "_id";
+	public static final String KEY_ITEMS_DEPARTMENT_ID = "department_id";
+	public static final String KEY_ITEMS_BARCODE = "barcode";
+	public static final String KEY_ITEMS_NAME = "name";
+	public static final String KEY_ITEMS_PRICE = "price";
     	
 	public DatabaseAdapter(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,13 +46,13 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		String CREATE_DATA_TABLE = "CREATE TABLE " + TABLE_DATA + "(" + KEY_DATA_NAME + " TEXT," + KEY_DATA_VALUE + " TEXT" + ")";
+		String CREATE_DATA_TABLE = "CREATE TABLE " + TABLE_DATA + "(" + KEY_DATA_DATA_ID + " INTEGER PRIMARY KEY," + KEY_DATA_NAME + " TEXT," + KEY_DATA_VALUE + " TEXT" + ")";
 		db.execSQL(CREATE_DATA_TABLE);
 		
-        String CREATE_DEPARTMENTS_TABLE = "CREATE TABLE " + TABLE_DEPARTMENTS + "(" + KEY_DEPARTMENTS_DEPARTMENT_ID + " INTEGER," + KEY_DEPARTMENTS_NAME + " TEXT" + ")";
+        String CREATE_DEPARTMENTS_TABLE = "CREATE TABLE " + TABLE_DEPARTMENTS + "(" + KEY_DEPARTMENTS_DEPARTMENT_ID + " INTEGER PRIMARY KEY," + KEY_DEPARTMENTS_NAME + " TEXT" + ")";
         db.execSQL(CREATE_DEPARTMENTS_TABLE);
         
-        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ITEMS_ITEM_ID + " INTEGER," + KEY_ITEMS_DEPARTMENT_ID + " INTEGER, " + KEY_ITEMS_BARCODE + " INTEGER, " + KEY_ITEMS_NAME + " TEXT, " + KEY_ITEMS_PRICE + " TEXT " + ")";
+        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ITEMS_ITEM_ID + " INTEGER PRIMARY KEY," + KEY_ITEMS_DEPARTMENT_ID + " INTEGER, " + KEY_ITEMS_BARCODE + " INTEGER, " + KEY_ITEMS_NAME + " TEXT, " + KEY_ITEMS_PRICE + " TEXT " + ")";
         db.execSQL(CREATE_ITEMS_TABLE);
 	}
 
@@ -68,9 +69,9 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	
 	public void clearDatabase() {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.execSQL("TRUNCATE TABLE "+ TABLE_DATA);
-		db.execSQL("TRUNCATE TABLE "+ TABLE_DEPARTMENTS);
-		db.execSQL("TRUNCATE TABLE "+ TABLE_ITEMS);
+		db.delete(TABLE_DATA, null, null);
+		db.delete(TABLE_DEPARTMENTS, null, null);
+		db.delete(TABLE_ITEMS, null, null);
 	}
 	
 	public Department getDepartment(int departmentId) {
@@ -107,7 +108,9 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		return db.rawQuery(selectQuery, null);		
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		
+		return cursor;
 	}
 	
 	public void addDepartments(DepartmentJson data, ProgressBarUpdater progressBarUpdater) {
@@ -158,7 +161,9 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		return db.rawQuery(selectQuery, null);
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		
+		return cursor;
 	}
 	
 	public ArrayList<Item> getDepartmentItems(int departmentId) {
@@ -178,7 +183,9 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public Cursor getDepartmentItemsCursor(int departmentId) {		
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		return db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		
+		return cursor;
 	}
 	
 	public void addItems(ItemJson data, ProgressBarUpdater progressBarUpdater) {

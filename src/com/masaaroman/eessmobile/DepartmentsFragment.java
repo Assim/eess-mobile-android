@@ -1,16 +1,15 @@
 package com.masaaroman.eessmobile;
 
-import java.util.ArrayList;
-
 import android.app.Fragment;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class DepartmentsFragment extends Fragment {
@@ -24,17 +23,30 @@ public class DepartmentsFragment extends Fragment {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy); 
 		
-		ArrayList<String> list = new ArrayList<String>();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(myFragmentView.getContext(), android.R.layout.simple_list_item_1, list);
+		DatabaseAdapter db = new DatabaseAdapter(myFragmentView.getContext());
+		
+		// Get departments
+		Cursor cursor = db.getAllDepartmentsCursor();
+		
+		String[] from = {
+			DatabaseAdapter.KEY_DEPARTMENTS_NAME	
+		};
+		
+		int[] to = {
+			R.id.departmentName	
+		};
+		
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(myFragmentView.getContext(), R.layout.fragment_departments_row, cursor, from, to);
+		
 		ListView lv = (ListView)myFragmentView.findViewById(R.id.deptList);
 		lv.setAdapter(adapter);
 		
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				final String item = (String) parent.getItemAtPosition(position);
-				Toast.makeText(getActivity(), item, Toast.LENGTH_SHORT).show();
+			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
+				Toast.makeText(myFragmentView.getContext(), String.valueOf(id), Toast.LENGTH_LONG).show();
 			}
 		});
 
