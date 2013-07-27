@@ -205,6 +205,14 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		db.close();
 	}
 	
+	public Cursor searchItems(String search) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_NAME + "LIKE '%" + search + "%'", null, null, null, null);
+		
+		return cursor;
+	}
+	
 	public void addData(DataJson data) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		
