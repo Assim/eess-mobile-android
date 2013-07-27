@@ -27,6 +27,7 @@
             android:label="@string/app_name" >
         </activity>
         <activity android:name="com.masaaroman.eessmobile.DepartmentItemsActivity"></activity>
+        <activity android:name="com.masaaroman.eessmobile.ItemPictureActivity"></activity>
 
     </application>
 

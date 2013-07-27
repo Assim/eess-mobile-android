@@ -78,6 +78,9 @@ public class Item {
 	}
 	
 	public String getPicture() {
+		if(this.picture == null) {
+			return "";			
+		}
 		return this.picture;
 	}
 }
