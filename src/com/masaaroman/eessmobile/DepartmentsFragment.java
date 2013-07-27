@@ -1,6 +1,7 @@
 package com.masaaroman.eessmobile;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 public class DepartmentsFragment extends Fragment {
 
@@ -46,7 +46,14 @@ public class DepartmentsFragment extends Fragment {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-				Toast.makeText(myFragmentView.getContext(), String.valueOf(id), Toast.LENGTH_LONG).show();
+				Cursor c = (Cursor)parent.getAdapter().getItem(position);
+				
+				Intent i = new Intent(getActivity().getApplicationContext(), DepartmentItemsActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putString("department_name", c.getString(1));
+				bundle.putLong("department_id", id);
+				i.putExtras(bundle);
+				startActivity(i);				
 			}
 		});
 
