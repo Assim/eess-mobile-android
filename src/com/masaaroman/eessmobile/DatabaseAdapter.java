@@ -39,6 +39,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public static final String KEY_ITEMS_BARCODE = "barcode";
 	public static final String KEY_ITEMS_NAME = "name";
 	public static final String KEY_ITEMS_PRICE = "price";
+	public static final String KEY_ITEMS_PICTURE = "picture";
     	
 	public DatabaseAdapter(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,7 +53,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
         String CREATE_DEPARTMENTS_TABLE = "CREATE TABLE " + TABLE_DEPARTMENTS + "(" + KEY_DEPARTMENTS_DEPARTMENT_ID + " INTEGER PRIMARY KEY," + KEY_DEPARTMENTS_NAME + " TEXT" + ")";
         db.execSQL(CREATE_DEPARTMENTS_TABLE);
         
-        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ITEMS_ITEM_ID + " INTEGER PRIMARY KEY," + KEY_ITEMS_DEPARTMENT_ID + " INTEGER, " + KEY_ITEMS_BARCODE + " INTEGER, " + KEY_ITEMS_NAME + " TEXT, " + KEY_ITEMS_PRICE + " TEXT " + ")";
+        String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ITEMS_ITEM_ID + " INTEGER PRIMARY KEY," + KEY_ITEMS_DEPARTMENT_ID + " INTEGER, " + KEY_ITEMS_BARCODE + " INTEGER, " + KEY_ITEMS_NAME + " TEXT, " + KEY_ITEMS_PRICE + " TEXT, " + KEY_ITEMS_PICTURE + " TEXT" + ")";
         db.execSQL(CREATE_ITEMS_TABLE);
 	}
 
@@ -130,26 +131,26 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public Item getItem(int itemId) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		
-		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_ITEM_ID + "=?", new String[] { String.valueOf(itemId) }, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE, KEY_ITEMS_PICTURE }, KEY_ITEMS_ITEM_ID + "=?", new String[] { String.valueOf(itemId) }, null, null, null);
 		if(cursor != null) {
 			cursor.moveToFirst();
 		}
 		
-		Item item = new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4)));
+		Item item = new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4)), cursor.getString(5));
 		
 		return item;
 	}
 	
 	public ArrayList<Item> getAllItems() {
 		ArrayList<Item> itemList = new ArrayList<Item>();
-		String selectQuery = "SELECT  * FROM " + TABLE_ITEMS;
+		String selectQuery = "SELECT * FROM " + TABLE_ITEMS;
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
 		if(cursor.moveToFirst()) {
 			do {
-				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4))));
+				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4)), cursor.getString(5)));
 			} while(cursor.moveToNext());
 		}
 		
@@ -157,7 +158,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	}
 	
 	public Cursor getAllItemsCursor() {
-		String selectQuery = "SELECT  * FROM " + TABLE_ITEMS;
+		String selectQuery = "SELECT * FROM " + TABLE_ITEMS;
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -171,10 +172,10 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE, KEY_ITEMS_PICTURE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
 		if(cursor.moveToFirst()) {
 			do {
-				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4))));
+				itemList.add(new Item(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)), cursor.getString(3), new BigDecimal(cursor.getString(4)), cursor.getString(5)));
 			} while(cursor.moveToNext());
 		}
 		return itemList;
@@ -183,7 +184,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public Cursor getDepartmentItemsCursor(int departmentId) {		
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE, KEY_ITEMS_PICTURE }, KEY_ITEMS_DEPARTMENT_ID + "=?", new String[] { String.valueOf(departmentId) }, null, null, null);
 		
 		return cursor;
 	}
@@ -198,6 +199,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 			values.put(KEY_ITEMS_BARCODE, data.get(i).getBarcode());
 			values.put(KEY_ITEMS_NAME, data.get(i).getName());
 			values.put(KEY_ITEMS_PRICE, data.get(i).getPrice().toString());
+			values.put(KEY_ITEMS_PICTURE, data.get(i).getPicture());
 			db.insert(TABLE_ITEMS, null, values);
 			progressBarUpdater.increment();
 		}
@@ -208,7 +210,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public Cursor searchItems(String search) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		
-		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE }, KEY_ITEMS_NAME + "LIKE '%" + search + "%'", null, null, null, null);
+		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ITEMS_ITEM_ID, KEY_ITEMS_DEPARTMENT_ID, KEY_ITEMS_BARCODE, KEY_ITEMS_NAME, KEY_ITEMS_PRICE, KEY_ITEMS_PICTURE }, KEY_ITEMS_NAME + "LIKE '%" + search + "%'", null, null, null, null);
 		
 		return cursor;
 	}

@@ -21,12 +21,16 @@ public class Item {
 	@SerializedName("price")
 	private BigDecimal price;
 	
-	public Item(int itemId, int departmentId, int barcode, String name, BigDecimal price) {
+	@SerializedName("picture")
+	private String picture;
+	
+	public Item(int itemId, int departmentId, int barcode, String name, BigDecimal price, String picture) {
 		this.itemId = itemId;
 		this.departmentId = departmentId;
 		this.barcode = barcode;
 		this.name = name;
 		this.price = price;
+		this.picture = picture;
 	}
 	
 	public void setItemId(int itemId) {
@@ -67,5 +71,13 @@ public class Item {
 	
 	public BigDecimal getPrice() {
 		return this.price;
+	}
+	
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+	
+	public String getPicture() {
+		return this.picture;
 	}
 }
