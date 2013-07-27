@@ -16,9 +16,20 @@ public class MainActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
-        actionBar.addTab(actionBar.newTab().setText("Departments").setTabListener(new TabListener<DepartmentsFragment>(this, "Departments", DepartmentsFragment.class)));
-        actionBar.addTab(actionBar.newTab().setText("Search").setTabListener(new TabListener<SearchFragment>(this, "Search", SearchFragment.class)));
-        actionBar.addTab(actionBar.newTab().setText("Cart").setTabListener(new TabListener<CartFragment>(this, "Cart", CartFragment.class)));
+        Tab tabA = actionBar.newTab();
+        tabA.setText("Departments");
+        tabA.setTabListener(new TabListener<DepartmentsFragment>(this, "Departments", DepartmentsFragment.class));
+        actionBar.addTab(tabA);
+        
+        Tab tabB = actionBar.newTab();
+        tabB.setText("Search");
+        tabB.setTabListener(new TabListener<SearchFragment>(this, "Search", SearchFragment.class));
+        actionBar.addTab(tabB);
+        
+        Tab tabC = actionBar.newTab();
+        tabC.setText("Cart");
+        tabC.setTabListener(new TabListener<CartFragment>(this, "Cart", CartFragment.class));
+        actionBar.addTab(tabC);
         
         if (savedInstanceState != null) {
             int savedIndex = savedInstanceState.getInt("SAVED_INDEX");
