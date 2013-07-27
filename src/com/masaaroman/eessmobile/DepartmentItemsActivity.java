@@ -37,7 +37,7 @@ public class DepartmentItemsActivity extends Activity {
 		};
 		
 		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.activity_department_items_row, cursor, from, to);
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.row_item, cursor, from, to);
 		
 		ListView lv = (ListView)findViewById(R.id.itemsList);
 		lv.setAdapter(adapter);
