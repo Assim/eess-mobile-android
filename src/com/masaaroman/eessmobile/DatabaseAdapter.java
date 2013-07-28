@@ -3,6 +3,8 @@ package com.masaaroman.eessmobile;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import com.masaaroman.eessmobile.model.Cart;
+import com.masaaroman.eessmobile.model.CartItem;
 import com.masaaroman.eessmobile.model.DataJson;
 import com.masaaroman.eessmobile.model.Department;
 import com.masaaroman.eessmobile.model.DepartmentJson;
@@ -251,5 +253,30 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 			}
 		}
 		return 0;
+	}
+	
+	public void clearCart() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_CART, null, null);
+	}
+	
+	public Cart getCart() {
+		ArrayList<CartItem> items = new ArrayList<CartItem>();
+		String selectQuery = "SELECT * FROM " + TABLE_CART;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		if(cursor.moveToFirst()) {
+			do {
+				items.add(new CartItem(Integer.parseInt(cursor.getString(0)), cursor.getString(1), new BigDecimal(cursor.getString(2)), Integer.parseInt(cursor.getString(3))));
+			} while(cursor.moveToNext());
+		}
+				
+		// TODO fix total price issue
+		Cart cart = new Cart();
+		cart.setItemsArrayList(items);
+		
+		return cart;
 	}
 }

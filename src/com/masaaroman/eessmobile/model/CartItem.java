@@ -18,6 +18,13 @@ public class CartItem {
 	@SerializedName("qty")
 	private int qty;
 	
+	public CartItem(int id, String name, BigDecimal unitPrice, int qty) {
+		this.id = id;
+		this.name = name;
+		this.unitPrice = unitPrice;
+		this.qty = qty;
+	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}

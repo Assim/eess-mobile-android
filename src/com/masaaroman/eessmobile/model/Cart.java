@@ -6,19 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Cart {
-	private static Cart instance;
 	
 	private ArrayList<CartItem> items;
-	private BigDecimal amount;
+	private BigDecimal amount = new BigDecimal(0);
 	private String phoneNumber;
-	
-	private Cart() {} // For using Singleton pattern
-	
-	public Cart getInstance() {
-		if(instance == null)
-			instance = new Cart();
-		return instance;
-	}
 	
 	public void addItem(Item item) {
 		// Since we are adding an item either way, lets add to the amount
@@ -35,11 +26,7 @@ public class Cart {
 		}
 		
 		// Otherwise it doesn't exist, so add one
-		CartItem cartItem = new CartItem();
-		cartItem.setId(item.getItemId());
-		cartItem.setName(item.getName());
-		cartItem.setQty(1);
-		cartItem.setUnitPrice(item.getPrice());
+		CartItem cartItem = new CartItem(item.getItemId(), item.getName(), item.getPrice(), 1);
 		
 		items.add(cartItem);
 	}
@@ -119,4 +106,10 @@ public class Cart {
 	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
+	
+	public void setItemsArrayList(ArrayList<CartItem> items) {
+		this.items = items;
+	}
+	
+	// TODO UPdate amount
 }

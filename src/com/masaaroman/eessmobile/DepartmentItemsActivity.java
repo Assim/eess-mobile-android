@@ -37,7 +37,7 @@ public class DepartmentItemsActivity extends Activity {
 		
 		final SwipeDetector swipeDetector = new SwipeDetector();
 		
-		ItemAdapter adapter = new ItemAdapter(this, R.layout.row_item, cursor, from, to, 0);
+		final ItemAdapter adapter = new ItemAdapter(this, R.layout.row_item, cursor, from, to, 0, db.getCart());
 		
 		ListView lv = (ListView)findViewById(R.id.itemsList);
 		lv.setAdapter(adapter);
@@ -48,16 +48,10 @@ public class DepartmentItemsActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
 				if (swipeDetector.swipeDetected()) {
 		            if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
-		            	TextView tv = (TextView)view.findViewById(R.id.itemQty);
-		            	int currentQty = Integer.parseInt(tv.getText().toString());
-		            	++currentQty;
-		            	tv.setText(currentQty);
+		            	
 		            }
 		            if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-		            	TextView tv = (TextView)view.findViewById(R.id.itemQty);
-		            	int currentQty = Integer.parseInt(tv.getText().toString());
-		            	--currentQty;
-		            	tv.setText(currentQty);
+		            	
 		            }
 		        }
 				else {

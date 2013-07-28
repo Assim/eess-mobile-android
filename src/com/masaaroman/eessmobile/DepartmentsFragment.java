@@ -1,5 +1,7 @@
 package com.masaaroman.eessmobile;
 
+import com.masaaroman.eessmobile.model.Cart;
+
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
@@ -35,7 +37,8 @@ public class DepartmentsFragment extends Fragment {
 			R.id.departmentName	
 		};
 		
-		ItemAdapter adapter = new ItemAdapter(myFragmentView.getContext(), R.layout.fragment_departments_row, cursor, from, to, 0);
+		// TODO change new cart later
+		ItemAdapter adapter = new ItemAdapter(myFragmentView.getContext(), R.layout.fragment_departments_row, cursor, from, to, 0, new Cart());
 		
 		ListView lv = (ListView)myFragmentView.findViewById(R.id.deptList);
 		lv.setAdapter(adapter);
