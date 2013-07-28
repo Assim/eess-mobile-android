@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +27,15 @@ public class ItemPictureActivity extends Activity {
 		TextView itemName = (TextView)findViewById(R.id.itemName);
 		ProgressBar progressBar = (ProgressBar)findViewById(R.id.itemImageProgressBar);
 		ImageView imageView = (ImageView)findViewById(R.id.itemImage);
+		Button closeButton = (Button)findViewById(R.id.closeButton);
+		
+		closeButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+		});
 		
 		imageView.setVisibility(View.GONE);
 		

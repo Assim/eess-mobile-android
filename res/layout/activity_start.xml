@@ -20,7 +20,8 @@
         android:layout_height="wrap_content" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/logo"
+        android:contentDescription="Logo"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="0.69"

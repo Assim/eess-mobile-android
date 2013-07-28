@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DepartmentItemsActivity extends Activity {
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +35,8 @@ public class DepartmentItemsActivity extends Activity {
 			R.id.itemName
 		};
 		
+		final SwipeDetector swipeDetector = new SwipeDetector();
+		
 		ItemAdapter adapter = new ItemAdapter(this, R.layout.row_item, cursor, from, to, 0);
 		
 		ListView lv = (ListView)findViewById(R.id.itemsList);
@@ -44,7 +46,32 @@ public class DepartmentItemsActivity extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-				// Click event
+				if (swipeDetector.swipeDetected()) {
+		            if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
+		            	TextView tv = (TextView)view.findViewById(R.id.itemQty);
+		            	int currentQty = Integer.parseInt(tv.getText().toString());
+		            	++currentQty;
+		            	tv.setText(currentQty);
+		            }
+		            if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+		            	TextView tv = (TextView)view.findViewById(R.id.itemQty);
+		            	int currentQty = Integer.parseInt(tv.getText().toString());
+		            	--currentQty;
+		            	tv.setText(currentQty);
+		            }
+		        }
+				else {
+					if(!db.getItem((int)id).getPicture().equals("")) {
+						Intent i = new Intent(getApplicationContext(), ItemPictureActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putLong("item_id", id);
+						i.putExtras(bundle);
+						startActivity(i);
+					}
+					else {
+						Toast.makeText(getApplicationContext(), "This item has no picture.", Toast.LENGTH_SHORT).show();
+					}
+				}
 			}
 		});
 		
@@ -52,18 +79,11 @@ public class DepartmentItemsActivity extends Activity {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if(!db.getItem((int)id).getPicture().equals("")) {
-					Intent i = new Intent(getApplicationContext(), ItemPictureActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putLong("item_id", id);
-					i.putExtras(bundle);
-					startActivity(i);
-				}
-				else {
-					Toast.makeText(getApplicationContext(), "This item has no picture.", Toast.LENGTH_SHORT).show();
-				}
+				// Long click
 				return true; // Just so that it doesn't call the onItemClick
 			}
 		});
+
+		lv.setOnTouchListener(swipeDetector);
 	}
 }
