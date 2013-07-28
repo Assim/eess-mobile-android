@@ -40,6 +40,13 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 	public static final String KEY_ITEMS_NAME = "name";
 	public static final String KEY_ITEMS_PRICE = "price";
 	public static final String KEY_ITEMS_PICTURE = "picture";
+	
+	public static final String TABLE_CART = "cart";
+	
+	public static final String KEY_CART_ID = "_id";
+	public static final String KEY_CART_ITEM_ID = "item_id";
+	public static final String KEY_CART_UNIT_PRICE = "unit_price";
+	public static final String KEY_CART_QTY = "qty";
     	
 	public DatabaseAdapter(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,6 +62,9 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
         
         String CREATE_ITEMS_TABLE = "CREATE TABLE " + TABLE_ITEMS + "(" + KEY_ITEMS_ITEM_ID + " INTEGER PRIMARY KEY," + KEY_ITEMS_DEPARTMENT_ID + " INTEGER, " + KEY_ITEMS_BARCODE + " INTEGER, " + KEY_ITEMS_NAME + " TEXT, " + KEY_ITEMS_PRICE + " TEXT, " + KEY_ITEMS_PICTURE + " TEXT" + ")";
         db.execSQL(CREATE_ITEMS_TABLE);
+        
+        String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART + "(" + KEY_CART_ID + " INTEGER PRIMARY KEY," + KEY_CART_ITEM_ID + " INTEGER, " + KEY_CART_UNIT_PRICE + " TEXT, " + KEY_CART_QTY + " INTEGER" + ")";
+        db.execSQL(CREATE_CART_TABLE);
 	}
 
 	@Override
@@ -63,6 +73,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEPARTMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
  
         // Create tables again
         onCreate(db);
@@ -73,6 +84,7 @@ public class DatabaseAdapter extends SQLiteOpenHelper {
 		db.delete(TABLE_DATA, null, null);
 		db.delete(TABLE_DEPARTMENTS, null, null);
 		db.delete(TABLE_ITEMS, null, null);
+		db.delete(TABLE_CART, null, null);
 	}
 	
 	public Department getDepartment(int departmentId) {
